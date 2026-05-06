@@ -1,0 +1,28 @@
+{
+  "name": "ucb-explorer-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SaiPlusSai/UCB-EXPLORER-BACKEND.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SaiPlusSai/UCB-EXPLORER-BACKEND/issues"
+  },
+  "homepage": "https://github.com/SaiPlusSai/UCB-EXPLORER-BACKEND#readme",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
