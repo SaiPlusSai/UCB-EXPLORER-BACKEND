@@ -37,7 +37,28 @@ const porVisitante = async (
   return rows;
 };
 
+const todos = async () => {
+
+  const { rows } = await pool.query(
+    `SELECT
+        cp.id,
+        cp.canjeado_en,
+        cp.visitante_id,
+        cp.premio_id,
+        p.nombre AS premio_nombre,
+        p.costo_puntos,
+        p.imagen_url
+     FROM canjes_premios cp
+     JOIN premios p ON p.id = cp.premio_id
+     ORDER BY cp.canjeado_en DESC
+     LIMIT 500`
+  );
+
+  return rows;
+};
+
 module.exports = {
   registrar,
   porVisitante,
+  todos,
 };

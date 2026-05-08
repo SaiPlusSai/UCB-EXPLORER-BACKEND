@@ -121,10 +121,50 @@ const eliminar = async (id) => {
   );
 };
 
+const crearAdmin = async ({
+  titulo,
+  descripcion,
+  carrera_id,
+  fecha_recordatorio,
+}) => {
+
+  const { rows } = await pool.query(
+    `INSERT INTO recordatorios
+       (titulo, descripcion, carrera_id, fecha_recordatorio, creado_por_admin)
+     VALUES ($1, $2, $3, $4, TRUE)
+     RETURNING *`,
+    [
+      titulo,
+      descripcion || null,
+      carrera_id || null,
+      fecha_recordatorio || null,
+    ]
+  );
+
+  return rows[0];
+};
+
+const todosAdmin = async () => {
+
+  const { rows } = await pool.query(
+    `SELECT
+        r.*,
+        c.nombre AS carrera_nombre
+     FROM recordatorios r
+     LEFT JOIN carreras c ON c.id = r.carrera_id
+     WHERE r.creado_por_admin = TRUE
+     ORDER BY r.fecha_recordatorio NULLS LAST, r.creado_en DESC`
+  );
+
+  return rows;
+};
+
 module.exports = {
   porVisitante,
   obtener,
   crearVisitante,
   actualizar,
   eliminar,
+  crearAdmin,
+  todosAdmin,
 };

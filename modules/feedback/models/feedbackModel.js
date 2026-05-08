@@ -60,8 +60,103 @@ const registrarRespuesta = async ({
   return rows[0];
 };
 
+const crearPregunta = async ({
+  pregunta,
+  tipo_pregunta,
+  categoria,
+  activa,
+}) => {
+
+  const { rows } = await pool.query(
+    `INSERT INTO preguntas_feedback
+       (pregunta, tipo_pregunta, categoria, activa)
+     VALUES ($1, $2, $3, $4)
+     RETURNING *`,
+    [
+      pregunta,
+      tipo_pregunta || "rating",
+      categoria || null,
+      activa ?? true,
+    ]
+  );
+
+  return rows[0];
+};
+
+const actualizarPregunta = async (
+  id,
+  { pregunta, tipo_pregunta, categoria, activa }
+) => {
+
+  const { rows } = await pool.query(
+    `UPDATE preguntas_feedback
+     SET pregunta      = COALESCE($2, pregunta),
+         tipo_pregunta = COALESCE($3, tipo_pregunta),
+         categoria     = $4,
+         activa        = COALESCE($5, activa)
+     WHERE id = $1
+     RETURNING *`,
+    [
+      id,
+      pregunta,
+      tipo_pregunta,
+      categoria !== undefined ? categoria || null : undefined,
+      activa,
+    ]
+  );
+
+  return rows[0] || null;
+};
+
+const eliminarPregunta = async (id) => {
+
+  await pool.query(
+    `DELETE FROM preguntas_feedback WHERE id = $1`,
+    [id]
+  );
+};
+
+const respuestasPorPregunta = async (pregunta_id) => {
+
+  const { rows } = await pool.query(
+    `SELECT
+        rf.*,
+        pf.pregunta,
+        pf.tipo_pregunta
+     FROM respuestas_feedback rf
+     JOIN preguntas_feedback pf ON pf.id = rf.pregunta_id
+     WHERE rf.pregunta_id = $1
+     ORDER BY rf.respondido_en DESC`,
+    [pregunta_id]
+  );
+
+  return rows;
+};
+
+const todasLasRespuestas = async () => {
+
+  const { rows } = await pool.query(
+    `SELECT
+        rf.*,
+        pf.pregunta,
+        pf.tipo_pregunta,
+        pf.categoria
+     FROM respuestas_feedback rf
+     JOIN preguntas_feedback pf ON pf.id = rf.pregunta_id
+     ORDER BY rf.respondido_en DESC
+     LIMIT 1000`
+  );
+
+  return rows;
+};
+
 module.exports = {
   listarPreguntas,
   obtenerPregunta,
   registrarRespuesta,
+  crearPregunta,
+  actualizarPregunta,
+  eliminarPregunta,
+  respuestasPorPregunta,
+  todasLasRespuestas,
 };

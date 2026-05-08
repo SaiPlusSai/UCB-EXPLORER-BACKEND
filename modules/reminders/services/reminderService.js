@@ -83,9 +83,22 @@ const eliminar = async (
   await model.eliminar(id);
 };
 
+const listarAdmin = () => model.todosAdmin();
+
+const crearAdmin = async (datos) => {
+
+  if (!datos.titulo?.trim()) {
+    throw new HttpError(400, "Título requerido");
+  }
+
+  return model.crearAdmin(datos);
+};
+
 module.exports = {
   listarVisitante,
   crearVisitante,
   actualizar,
   eliminar,
+  listarAdmin,
+  crearAdmin,
 };

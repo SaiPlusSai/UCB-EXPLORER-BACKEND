@@ -102,8 +102,44 @@ const historialVisitante = (
     visitanteId
   );
 
+const listarParaAdmin = () => premioModel.listar();
+
+const crear = async (datos) => {
+
+  if (!datos.nombre?.trim()) {
+    throw new HttpError(400, "Nombre requerido");
+  }
+
+  return premioModel.crear(datos);
+};
+
+const actualizar = async (id, datos) => {
+
+  const existe = await premioModel.obtener(id);
+
+  if (!existe) throw new HttpError(404, "Premio no encontrado");
+
+  return premioModel.actualizar(id, datos);
+};
+
+const eliminar = async (id) => {
+
+  const existe = await premioModel.obtener(id);
+
+  if (!existe) throw new HttpError(404, "Premio no encontrado");
+
+  await premioModel.eliminar(id);
+};
+
+const todosLosCanjes = () => canjeModel.todos();
+
 module.exports = {
   listarParaVisitante,
   canjear,
   historialVisitante,
+  listarParaAdmin,
+  crear,
+  actualizar,
+  eliminar,
+  todosLosCanjes,
 };

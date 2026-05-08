@@ -104,8 +104,68 @@ const responder = async (
 const historial = (visitanteId) =>
   respuestaModel.respondidasPor(visitanteId);
 
+const listarParaAdmin = (filtros = {}) =>
+  preguntaModel.listarConOpciones(filtros);
+
+const obtenerParaAdmin = async (id) => {
+
+  const p = await preguntaModel.obtenerConOpciones(id);
+
+  if (!p) throw new HttpError(404, "Pregunta no encontrada");
+
+  return p;
+};
+
+const crear = async (datos) => {
+
+  if (!datos.pregunta?.trim()) {
+    throw new HttpError(400, "Campo pregunta requerido");
+  }
+
+  const { opciones, ...campos } = datos;
+
+  const pregunta = await preguntaModel.crear(campos);
+
+  if (Array.isArray(opciones) && opciones.length > 0) {
+    await preguntaModel.reemplazarOpciones(pregunta.id, opciones);
+  }
+
+  return preguntaModel.obtenerConOpciones(pregunta.id);
+};
+
+const actualizar = async (id, datos) => {
+
+  const existe = await preguntaModel.obtener(id);
+
+  if (!existe) throw new HttpError(404, "Pregunta no encontrada");
+
+  const { opciones, ...campos } = datos;
+
+  await preguntaModel.actualizar(id, campos);
+
+  if (Array.isArray(opciones)) {
+    await preguntaModel.reemplazarOpciones(id, opciones);
+  }
+
+  return preguntaModel.obtenerConOpciones(id);
+};
+
+const eliminar = async (id) => {
+
+  const existe = await preguntaModel.obtener(id);
+
+  if (!existe) throw new HttpError(404, "Pregunta no encontrada");
+
+  await preguntaModel.eliminar(id);
+};
+
 module.exports = {
   listarParaVisitante,
   responder,
   historial,
+  listarParaAdmin,
+  obtenerParaAdmin,
+  crear,
+  actualizar,
+  eliminar,
 };

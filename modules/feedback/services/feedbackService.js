@@ -55,7 +55,49 @@ const responder = async (
   return guardadas;
 };
 
+const listarAdmin = () =>
+  model.listarPreguntas({ soloActivas: false });
+
+const crearPregunta = async (datos) => {
+
+  if (!datos.pregunta?.trim()) {
+    throw new HttpError(400, "Campo pregunta requerido");
+  }
+
+  return model.crearPregunta(datos);
+};
+
+const actualizarPregunta = async (id, datos) => {
+
+  const existe = await model.obtenerPregunta(id);
+
+  if (!existe) throw new HttpError(404, "Pregunta no encontrada");
+
+  return model.actualizarPregunta(id, datos);
+};
+
+const eliminarPregunta = async (id) => {
+
+  const existe = await model.obtenerPregunta(id);
+
+  if (!existe) throw new HttpError(404, "Pregunta no encontrada");
+
+  await model.eliminarPregunta(id);
+};
+
+const respuestasPregunta = (id) =>
+  model.respuestasPorPregunta(id);
+
+const todasRespuestas = () =>
+  model.todasLasRespuestas();
+
 module.exports = {
   listarVisitante,
   responder,
+  listarAdmin,
+  crearPregunta,
+  actualizarPregunta,
+  eliminarPregunta,
+  respuestasPregunta,
+  todasRespuestas,
 };

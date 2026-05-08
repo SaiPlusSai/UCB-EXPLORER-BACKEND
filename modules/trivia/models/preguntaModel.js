@@ -111,9 +111,123 @@ const opcionPertenece = async (
   return rows[0] || null;
 };
 
+const crear = async ({
+  pregunta,
+  carrera_id,
+  puntos,
+  mensaje_feedback,
+  activa,
+}) => {
+
+  const { rows } = await pool.query(
+    `INSERT INTO preguntas_trivia
+       (pregunta, carrera_id, puntos, mensaje_feedback, activa)
+     VALUES ($1, $2, $3, $4, $5)
+     RETURNING *`,
+    [
+      pregunta,
+      carrera_id || null,
+      puntos ?? 0,
+      mensaje_feedback || null,
+      activa ?? true,
+    ]
+  );
+
+  return rows[0];
+};
+
+const actualizar = async (
+  id,
+  { pregunta, carrera_id, puntos, mensaje_feedback, activa }
+) => {
+
+  const { rows } = await pool.query(
+    `UPDATE preguntas_trivia
+     SET pregunta          = COALESCE($2, pregunta),
+         carrera_id        = $3,
+         puntos            = COALESCE($4, puntos),
+         mensaje_feedback  = $5,
+         activa            = COALESCE($6, activa)
+     WHERE id = $1
+     RETURNING *`,
+    [
+      id,
+      pregunta,
+      carrera_id !== undefined ? carrera_id || null : undefined,
+      puntos,
+      mensaje_feedback !== undefined ? mensaje_feedback || null : undefined,
+      activa,
+    ]
+  );
+
+  return rows[0] || null;
+};
+
+const eliminar = async (id) => {
+
+  await pool.query(
+    `DELETE FROM preguntas_trivia WHERE id = $1`,
+    [id]
+  );
+};
+
+const reemplazarOpciones = async (
+  pregunta_id,
+  opciones
+) => {
+
+  await pool.query(
+    `DELETE FROM opciones_trivia WHERE pregunta_id = $1`,
+    [pregunta_id]
+  );
+
+  if (!opciones || opciones.length === 0) return [];
+
+  const values = opciones
+    .map((_, i) => `($${i * 3 + 1}, $${i * 3 + 2}, $${i * 3 + 3})`)
+    .join(', ');
+
+  const params = opciones.flatMap((o) => [
+    pregunta_id,
+    o.texto_opcion,
+    !!o.es_correcta,
+  ]);
+
+  const { rows } = await pool.query(
+    `INSERT INTO opciones_trivia (pregunta_id, texto_opcion, es_correcta)
+     VALUES ${values}
+     RETURNING *`,
+    params
+  );
+
+  return rows;
+};
+
+const obtenerConOpciones = async (id) => {
+
+  const p = await obtener(id);
+
+  if (!p) return null;
+
+  const { rows: opciones } = await pool.query(
+    `SELECT id, pregunta_id, texto_opcion, es_correcta
+     FROM opciones_trivia
+     WHERE pregunta_id = $1
+     ORDER BY id ASC`,
+    [id]
+  );
+
+  return { ...p, opciones };
+};
+
 module.exports = {
   listar,
   obtener,
   listarConOpciones,
   opcionPertenece,
+  crear,
+  actualizar,
+  eliminar,
+  reemplazarOpciones,
+  obtenerConOpciones,
 };
