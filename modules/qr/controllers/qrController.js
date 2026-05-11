@@ -1,14 +1,75 @@
-const service = require("../services/qrService");
+const service = require(
+  "../services/qrService"
+);
 
-exports.escanear = async (req, res) => {
-  const data = await service.escanear(req.visitante.id, req.body);
-  res.json({ ok: true, data });
+exports.escanear = async (
+  req,
+  res
+) => {
+
+  const data =
+    await service.escanear(
+      req.visitante.id,
+      req.body
+    );
+
+  res.json({
+    ok: true,
+    data,
+  });
 };
 
-exports.historial = async (req, res) => {
-  res.json({ ok: true, data: await service.historialVisitante(req.visitante.id) });
+exports.historial = async (
+  req,
+  res
+) => {
+
+  res.json({
+    ok: true,
+    data:
+      await service.historialVisitante(
+        req.visitante.id
+      ),
+  });
 };
 
-exports.adminTodos = async (req, res) => {
-  res.json({ ok: true, data: await service.todosEscaneosAdmin() });
+exports.adminTodos = async (
+  req,
+  res
+) => {
+
+  res.json({
+    ok: true,
+    data:
+      await service.todosEscaneosAdmin(),
+  });
 };
+
+exports.generarQR = async (
+  req,
+  res
+) => {
+
+  const data =
+    await service.generarQR(
+      req.admin.id,
+      req.body
+    );
+
+  res.json({
+    ok: true,
+    data,
+  });
+};
+
+exports.listarQRGenerados =
+  async (req, res) => {
+
+    const data =
+      await service.listarQRGenerados();
+
+    res.json({
+      ok: true,
+      data,
+    });
+  };
