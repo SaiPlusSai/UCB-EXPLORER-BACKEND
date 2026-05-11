@@ -6,6 +6,11 @@ const authAdmin = require("../../../middleware/authAdmin");
 
 // Visitante
 router.get("/visitante", authVisitor, asyncHandler(ctrl.listarVisitante));
+router.get(
+  "/visitante/mis-respuestas",
+  authVisitor,
+  asyncHandler(ctrl.misRespuestas)
+);
 router.post("/visitante/responder", authVisitor, asyncHandler(ctrl.responder));
 
 // Admin — /admin/respuestas BEFORE /admin/:id/respuestas

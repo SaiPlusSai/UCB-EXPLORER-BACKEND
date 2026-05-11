@@ -76,3 +76,18 @@ exports.respuestasPregunta = async (req, res) => {
 
   res.json({ ok: true, data });
 };
+exports.misRespuestas = async (
+  req,
+  res
+) => {
+
+  const data =
+    await service.misRespuestas(
+      req.visitante.id
+    )
+
+  res.json({
+    ok: true,
+    data,
+  })
+}

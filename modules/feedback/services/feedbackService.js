@@ -91,6 +91,12 @@ const respuestasPregunta = (id) =>
 const todasRespuestas = () =>
   model.todasLasRespuestas();
 
+const misRespuestas = (
+  visitanteId
+) =>
+  model.respuestasPorVisitante(
+    visitanteId
+  );
 module.exports = {
   listarVisitante,
   responder,
@@ -100,4 +106,5 @@ module.exports = {
   eliminarPregunta,
   respuestasPregunta,
   todasRespuestas,
+  misRespuestas,
 };

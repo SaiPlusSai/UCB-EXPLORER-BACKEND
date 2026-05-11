@@ -149,7 +149,26 @@ const todasLasRespuestas = async () => {
 
   return rows;
 };
+const respuestasPorVisitante = async (
+  visitante_id
+) => {
 
+  const { rows } = await pool.query(
+    `SELECT
+        rf.*,
+        pf.pregunta,
+        pf.tipo_pregunta,
+        pf.categoria
+     FROM respuestas_feedback rf
+     JOIN preguntas_feedback pf
+       ON pf.id = rf.pregunta_id
+     WHERE rf.visitante_id = $1
+     ORDER BY rf.respondido_en DESC`,
+    [visitante_id]
+  )
+
+  return rows
+}
 module.exports = {
   listarPreguntas,
   obtenerPregunta,
@@ -159,4 +178,5 @@ module.exports = {
   eliminarPregunta,
   respuestasPorPregunta,
   todasLasRespuestas,
+  respuestasPorVisitante,
 };

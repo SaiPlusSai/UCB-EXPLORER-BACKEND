@@ -1,63 +1,110 @@
 .
-|-- .env                           (DATABASE_URL, PORT, JWT_SECRET, JWT_EXPIRES_IN, NODE_ENV)
-|-- .env.example
 |-- config
-|   |-- database.js                (Pool pg + Supabase)
-|   `-- jwt.js                     (sign / verify)
+|   |-- database.js
+|   `-- jwt.js
+|-- estructura.txt
 |-- middleware
-|   |-- authAdmin.js               (verifica JWT tipo=admin)
-|   |-- authVisitor.js             (verifica JWT tipo=visitante)
-|   `-- errorHandler.js            (handler global de errores)
+|   |-- authAdmin.js
+|   |-- authVisitor.js
+|   `-- errorHandler.js
 |-- modules
 |   |-- analytics
-|   |   |-- controllers/analyticsController.js
-|   |   |-- models/analyticsModel.js
-|   |   `-- routes/analyticsRoutes.js
+|   |   |-- controllers
+|   |   |   `-- analyticsController.js
+|   |   |-- models
+|   |   |   `-- analyticsModel.js
+|   |   `-- routes
+|   |       `-- analyticsRoutes.js
 |   |-- auth-admin
-|   |   |-- controllers/authAdminController.js
-|   |   |-- models/administradorModel.js
-|   |   |-- services/authAdminService.js
-|   |   `-- routes/authAdminRoutes.js
+|   |   |-- controllers
+|   |   |   `-- authAdminController.js
+|   |   |-- models
+|   |   |   `-- administradorModel.js
+|   |   |-- routes
+|   |   |   `-- authAdminRoutes.js
+|   |   `-- services
+|   |       `-- authAdminService.js
 |   |-- career
-|   |   |-- controllers/carreraController.js
-|   |   |-- models/carreraModel.js
-|   |   |-- services/carreraService.js
-|   |   `-- routes/carreraRoutes.js
+|   |   |-- controllers
+|   |   |   `-- carreraController.js
+|   |   |-- models
+|   |   |   `-- carreraModel.js
+|   |   |-- routes
+|   |   |   `-- carreraRoutes.js
+|   |   `-- services
+|   |       `-- carreraService.js
 |   |-- feedback
-|   |   |-- controllers/feedbackController.js
-|   |   |-- models/feedbackModel.js
-|   |   |-- services/feedbackService.js
-|   |   `-- routes/feedbackRoutes.js
+|   |   |-- controllers
+|   |   |   `-- feedbackController.js
+|   |   |-- models
+|   |   |   `-- feedbackModel.js
+|   |   |-- routes
+|   |   |   `-- feedbackRoutes.js
+|   |   `-- services
+|   |       `-- feedbackService.js
 |   |-- qr
-|   |   |-- controllers/qrController.js
-|   |   |-- models/qrModel.js
-|   |   |-- services/qrService.js
-|   |   `-- routes/qrRoutes.js
+|   |   |-- controllers
+|   |   |   `-- qrController.js
+|   |   |-- models
+|   |   |   `-- qrModel.js
+|   |   |-- routes
+|   |   |   `-- qrRoutes.js
+|   |   `-- services
+|   |       `-- qrService.js
 |   |-- reminders
-|   |   |-- controllers/reminderController.js
-|   |   |-- models/reminderModel.js
-|   |   |-- services/reminderService.js
-|   |   `-- routes/reminderRoutes.js
+|   |   |-- controllers
+|   |   |   `-- reminderController.js
+|   |   |-- models
+|   |   |   `-- reminderModel.js
+|   |   |-- routes
+|   |   |   `-- reminderRoutes.js
+|   |   `-- services
+|   |       `-- reminderService.js
 |   |-- rewards
-|   |   |-- controllers/rewardsController.js
-|   |   |-- models/(premioModel.js, canjeModel.js)
-|   |   |-- services/rewardsService.js
-|   |   `-- routes/rewardsRoutes.js
+|   |   |-- controllers
+|   |   |   `-- rewardsController.js
+|   |   |-- models
+|   |   |   |-- canjeModel.js
+|   |   |   `-- premioModel.js
+|   |   |-- routes
+|   |   |   `-- rewardsRoutes.js
+|   |   `-- services
+|   |       `-- rewardsService.js
 |   |-- ticket-access-visitor
-|   |   |-- controllers/(colegioController.js, visitorAccessController.js)
-|   |   |-- models/(colegioModel.js, ticketModel.js, visitanteModel.js)
-|   |   |-- services/visitorAccessService.js
-|   |   `-- routes/(colegioRoutes.js, visitorAccessRoutes.js)
+|   |   |-- controllers
+|   |   |   |-- colegioController.js
+|   |   |   `-- visitorAccessController.js
+|   |   |-- models
+|   |   |   |-- colegioModel.js
+|   |   |   |-- ticketModel.js
+|   |   |   `-- visitanteModel.js
+|   |   |-- routes
+|   |   |   |-- colegioRoutes.js
+|   |   |   `-- visitorAccessRoutes.js
+|   |   `-- services
+|   |       `-- visitorAccessService.js
 |   `-- trivia
-|       |-- controllers/triviaController.js
-|       |-- models/(preguntaModel.js, respuestaModel.js)
-|       |-- services/triviaService.js
-|       `-- routes/triviaRoutes.js
+|       |-- controllers
+|       |   `-- triviaController.js
+|       |-- models
+|       |   |-- preguntaModel.js
+|       |   `-- respuestaModel.js
+|       |-- routes
+|       |   `-- triviaRoutes.js
+|       `-- services
+|           `-- triviaService.js
+|-- package-lock.json
+|-- package.json
 |-- routes
-|   `-- index.js                   (router central, monta /api/*)
+|   `-- index.js
 |-- shared
-|   |-- constants/index.js
-|   `-- utils/(asyncHandler.js, httpError.js)
+|   |-- constants
+|   |   `-- index.js
+|   `-- utils
+|       |-- asyncHandler.js
+|       `-- httpError.js
 `-- src
-    |-- app.js                     (express + cors + json + 404 + errorHandler)
-    `-- server.js                  (boot + healthcheck DB)
+    |-- app.js
+    `-- server.js
+
+52 directories, 55 files

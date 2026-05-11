@@ -74,6 +74,21 @@ exports.eliminar = async (req, res) => {
 
   res.json({ ok: true, mensaje: "Premio eliminado" });
 };
+exports.subirImagenPremio = async (
+  req,
+  res
+) => {
+
+  const url =
+    await service.subirImagenPremio(
+      req.file
+    );
+
+  res.status(200).json({
+    ok: true,
+    url,
+  });
+};
 
 exports.todosCanjes = async (req, res) => {
 

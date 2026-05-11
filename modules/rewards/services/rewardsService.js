@@ -6,6 +6,10 @@ const visitanteModel = require("../../ticket-access-visitor/models/visitanteMode
 
 const HttpError = require("../../../shared/utils/httpError");
 
+const supabase = require("../../../config/supabase");
+
+const { v4: uuidv4 } = require("uuid");
+
 const listarParaVisitante = () =>
   premioModel.listar({
     soloActivos: true,
@@ -132,7 +136,45 @@ const eliminar = async (id) => {
 };
 
 const todosLosCanjes = () => canjeModel.todos();
+const subirImagenPremio = async (file) => {
 
+  if (!file) {
+    throw new HttpError(400, "No se envio ninguna imagen");
+  }
+
+  const extension = file.originalname
+    .split(".")
+    .pop();
+
+  const fileName =
+    `premios/${uuidv4()}.${extension}`;
+
+  const { error } =
+    await supabase.storage
+      .from(process.env.SUPABASE_BUCKET)
+      .upload(
+        fileName,
+        file.buffer,
+        {
+          contentType: file.mimetype,
+          upsert: false,
+        }
+      );
+
+  if (error) {
+    throw new HttpError(
+      500,
+      error.message
+    );
+  }
+
+  const { data } =
+    supabase.storage
+      .from(process.env.SUPABASE_BUCKET)
+      .getPublicUrl(fileName);
+
+  return data.publicUrl;
+};
 module.exports = {
   listarParaVisitante,
   canjear,
@@ -142,4 +184,5 @@ module.exports = {
   actualizar,
   eliminar,
   todosLosCanjes,
+  subirImagenPremio,
 };
