@@ -3,11 +3,9 @@ const service = require("../services/triviaService");
 exports.listarVisitante = async (req, res) => {
 
   const data =
-    await service.listarParaVisitante({
-      carrera_id: req.query.carrera_id
-        ? Number(req.query.carrera_id)
-        : null,
-    });
+    await service.listarParaVisitante(
+      req.visitante.id
+    );
 
   res.json({
     ok: true,
@@ -48,7 +46,10 @@ exports.listarAdmin = async (req, res) => {
       : null,
   });
 
-  res.json({ ok: true, data });
+  res.json({
+    ok: true,
+    data,
+  });
 };
 
 exports.obtenerAdmin = async (req, res) => {
@@ -57,14 +58,22 @@ exports.obtenerAdmin = async (req, res) => {
     Number(req.params.id)
   );
 
-  res.json({ ok: true, data });
+  res.json({
+    ok: true,
+    data,
+  });
 };
 
 exports.crear = async (req, res) => {
 
-  const data = await service.crear(req.body);
+  const data = await service.crear(
+    req.body
+  );
 
-  res.status(201).json({ ok: true, data });
+  res.status(201).json({
+    ok: true,
+    data,
+  });
 };
 
 exports.actualizar = async (req, res) => {
@@ -74,12 +83,20 @@ exports.actualizar = async (req, res) => {
     req.body
   );
 
-  res.json({ ok: true, data });
+  res.json({
+    ok: true,
+    data,
+  });
 };
 
 exports.eliminar = async (req, res) => {
 
-  await service.eliminar(Number(req.params.id));
+  await service.eliminar(
+    Number(req.params.id)
+  );
 
-  res.json({ ok: true, mensaje: "Pregunta eliminada" });
+  res.json({
+    ok: true,
+    mensaje: "Pregunta eliminada",
+  });
 };

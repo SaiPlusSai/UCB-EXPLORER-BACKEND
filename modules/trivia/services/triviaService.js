@@ -6,12 +6,25 @@ const visitanteModel = require("../../ticket-access-visitor/models/visitanteMode
 
 const HttpError = require("../../../shared/utils/httpError");
 
-const listarParaVisitante = async (filtros) => {
+const listarParaVisitante = async (
+  visitanteId
+) => {
 
-  const preguntas = await preguntaModel.listarConOpciones({
-    ...filtros,
-    soloActivas: true,
-  });
+  const carrerasVisitante =
+    await visitanteModel.obtenerCarreras(
+      visitanteId
+    );
+
+  const carrerasIds =
+    carrerasVisitante.map(
+      (c) => c.carrera_id
+    );
+
+  const preguntas =
+    await preguntaModel.listarConOpciones({
+      carreras_ids: carrerasIds,
+      soloActivas: true,
+    });
 
   return preguntas.map((p) => ({
     ...p,

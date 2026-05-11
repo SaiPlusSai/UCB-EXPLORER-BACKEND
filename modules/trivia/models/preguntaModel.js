@@ -2,6 +2,7 @@ const pool = require("../../../config/database");
 
 const listar = async ({
   carrera_id,
+  carreras_ids,
   soloActivas = false,
 } = {}) => {
 
@@ -16,6 +17,21 @@ const listar = async ({
     conds.push(
       `p.carrera_id = $${params.length}`
     );
+  }
+
+  if (
+    Array.isArray(carreras_ids) &&
+    carreras_ids.length > 0
+  ) {
+
+    params.push(carreras_ids);
+
+    conds.push(`
+      (
+        p.carrera_id = ANY($${params.length}::int[])
+        OR p.carrera_id IS NULL
+      )
+    `);
   }
 
   if (soloActivas) {
