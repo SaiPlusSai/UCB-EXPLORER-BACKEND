@@ -231,10 +231,34 @@ const eliminar = async (id) => {
   );
 };
 
+const buscarOCrearPorNombre = async (nombre) => {
+  const nombreLimpio = normalizar(nombre);
+  if (!nombreLimpio) throw new Error("El nombre del colegio es obligatorio");
+
+  // Try to find existing
+  const { rows: existentes } = await pool.query(
+    `SELECT * FROM colegios WHERE LOWER(TRIM(nombre)) = LOWER(TRIM($1)) LIMIT 1`,
+    [nombreLimpio]
+  );
+
+  if (existentes.length > 0) return existentes[0];
+
+  // Create new
+  const { rows } = await pool.query(
+    `INSERT INTO colegios (nombre, ciudad, departamento, pais)
+     VALUES ($1, $2, $3, $4)
+     RETURNING *`,
+    [nombreLimpio, "Sin especificar", "Sin especificar", "Bolivia"]
+  );
+
+  return rows[0];
+};
+
 module.exports = {
   listar,
   obtener,
   crear,
   actualizar,
   eliminar,
+  buscarOCrearPorNombre,
 };

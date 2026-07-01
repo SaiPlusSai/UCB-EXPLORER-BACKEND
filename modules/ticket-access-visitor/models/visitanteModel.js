@@ -19,14 +19,103 @@ const obtenerPorTicket = async (ticketId) => {
   return rows[0] || null;
 };
 
-const crear = async ({ ticket_id, colegio_id, validacion_completada = true }) => {
+const crear = async ({
+  ticket_id,
+  colegio_id,
+  validacion_completada = true,
+  email = null,
+  nombre = null,
+  telefono = null,
+  ci = null,
+  fecha_nacimiento = null,
+  tipo_visitante = "estudiante",
+  parentesco = null,
+  nombre_estudiante = null,
+}) => {
   const { rows } = await pool.query(
-    `INSERT INTO visitantes (ticket_id, colegio_id, validacion_completada)
-     VALUES ($1, $2, $3)
+    `INSERT INTO visitantes (
+      ticket_id, colegio_id, validacion_completada,
+      email, nombre, telefono, ci, fecha_nacimiento,
+      tipo_visitante, parentesco, nombre_estudiante
+    )
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
      RETURNING *`,
-    [ticket_id, colegio_id, validacion_completada]
+    [
+      ticket_id,
+      colegio_id,
+      validacion_completada,
+      email,
+      nombre,
+      telefono,
+      ci,
+      fecha_nacimiento,
+      tipo_visitante,
+      parentesco,
+      nombre_estudiante,
+    ]
   );
   return rows[0];
+};
+
+const obtenerPorEmail = async (email) => {
+  const { rows } = await pool.query(
+    `SELECT v.*, c.nombre AS colegio_nombre
+     FROM visitantes v
+     LEFT JOIN colegios c ON c.id = v.colegio_id
+     WHERE LOWER(v.email) = LOWER($1)
+     ORDER BY v.creado_en DESC
+     LIMIT 1`,
+    [email]
+  );
+  return rows[0] || null;
+};
+
+const buscarPorCI = async (ci, fecha_nacimiento) => {
+  const { rows } = await pool.query(
+    `SELECT v.*, t.id AS ticket_id, t.codigo_ticket,
+            c.nombre AS colegio_nombre
+     FROM visitantes v
+     JOIN tickets t ON t.id = v.ticket_id
+     LEFT JOIN colegios c ON c.id = v.colegio_id
+     WHERE v.ci = $1 AND v.fecha_nacimiento = $2
+     ORDER BY v.creado_en DESC
+     LIMIT 1`,
+    [ci, fecha_nacimiento]
+  );
+  return rows[0] || null;
+};
+
+const actualizarDatos = async (id, { ci, fecha_nacimiento, nombre, email }) => {
+  const sets = [];
+  const params = [id];
+  let idx = 2;
+
+  if (ci !== undefined) {
+    sets.push(`ci = $${idx++}`);
+    params.push(ci);
+  }
+  if (fecha_nacimiento !== undefined) {
+    sets.push(`fecha_nacimiento = $${idx++}`);
+    params.push(fecha_nacimiento);
+  }
+  if (nombre !== undefined) {
+    sets.push(`nombre = $${idx++}`);
+    params.push(nombre);
+  }
+  if (email !== undefined) {
+    sets.push(`email = $${idx++}`);
+    params.push(email);
+  }
+
+  if (sets.length === 0) return null;
+
+  sets.push("actualizado_en = NOW()");
+
+  const { rows } = await pool.query(
+    `UPDATE visitantes SET ${sets.join(", ")} WHERE id = $1 RETURNING *`,
+    params
+  );
+  return rows[0] || null;
 };
 
 const sumarPuntos = async (visitante_id, puntos) => {
@@ -90,6 +179,9 @@ module.exports = {
   obtener,
   obtenerPorTicket,
   crear,
+  obtenerPorEmail,
+  buscarPorCI,
+  actualizarDatos,
   sumarPuntos,
   restarPuntos,
   obtenerCarreras,

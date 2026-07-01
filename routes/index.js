@@ -11,6 +11,7 @@ const feedbackRoutes = require("../modules/feedback/routes/feedbackRoutes");
 const qrRoutes = require("../modules/qr/routes/qrRoutes");
 const reminderRoutes = require("../modules/reminders/routes/reminderRoutes");
 const analyticsRoutes = require("../modules/analytics/routes/analyticsRoutes");
+const storeRoutes = require("../modules/store/routes/storeRoutes");
 
 router.get("/", (req, res) => {
   res.json({
@@ -27,6 +28,7 @@ router.get("/", (req, res) => {
       "qr",
       "reminders",
       "analytics",
+      "store",
     ],
   });
 });
@@ -45,5 +47,6 @@ router.use("/feedback", feedbackRoutes);
 router.use("/qr", qrRoutes);
 router.use("/recordatorios", reminderRoutes);
 router.use("/analytics", analyticsRoutes);
+router.use("/store", storeRoutes);
 
 module.exports = router;
